@@ -3,24 +3,50 @@ namespace LogAn
 {
     public class LogAnalyzer
     {
-        public bool WasLastFileNameValid { get; set; }
+        private IExtensionManager manager;
+
+        public LogAnalyzer()
+        {
+            manager = new FileExtensionManager();
+        }
 
         public bool IsValidLogFileName(string fileName)
         {
-            WasLastFileNameValid = false;
+            return this.IsValid(fileName);
+        }
 
-            if (string.IsNullOrEmpty(fileName))
-            {
-                throw new ArgumentException("имя файла должно быть задано");
-            }
+        protected virtual bool IsValid(string fileName)
+        {
+            FileExtensionManager mgr = new FileExtensionManager();
+            return mgr.IsValid(fileName);
 
-            if (!fileName.EndsWith(".SLF", StringComparison.CurrentCultureIgnoreCase))
-            {
-                return false;
-            }
+        }
+    }
 
-            WasLastFileNameValid = true;    // Состояние системы
-            return true;
+    public interface IExtensionManager
+    {
+        bool IsValid(string fileName);
+    }
+
+    class FileExtensionManager : IExtensionManager
+    {
+        public bool IsValid(string fileName)
+        {
+            // Здаесь читается файл.
+        }
+    }
+
+    public class LogAnalyzerUsingFactoryMethod
+    {
+        public bool IsValidLogFileName(string fileName)
+        {
+            return this.IsValid(fileName);
+        }
+
+        protected virtual bool IsValid(string fileName)
+        {
+            FileExtensionManager mgr = new FileExtensionManager();
+            return mgr.IsValid(fileName);
         }
     }
 }
